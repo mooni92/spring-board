@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="net.eunoiaym.mapper.MemberMapper">
+  <resultMap type="member" id="memberMap">
+	  	<id property="userid" column="userid"/>
+	  	<result property="userid" column="userid"/>
+	  	<result property="userpw" column="userpw"/>
+	  	<result property="enabled" column="enabled"/>
+	  	<result property="userName" column="userName"/>
+	  	<result property="regDate" column="regDate"/>
+	  	<result property="updateDate" column="updateDate"/>
+	  	<collection property="auths" resultMap="authMap" />
+  </resultMap>
+  <resultMap type="auth" id="authMap">
+  	<result property="userid"  column="userid"/>
+  	<result property="auth" column="auth"/>
+  </resultMap>
+  
+  	<insert id="insertMember">
+  	INSERT INTO TBL_MEMBER(USERID, USERPW, USERNAME) VALUES (#{userid}, #{userpw}, #{username})
+  	</insert>
+  
+  	<insert id="insertAuth">
+  	INSERT INTO TBL_AUTH VALUES(#{userid}, #{auth})
+  	</insert>
+  	
+  	<select id="read" resultMap="memberMap">
+	SELECT *
+	FROM TBL_MEMBER
+	LEFT JOIN TBL_AUTH
+	USING(USERID)
+	WHERE USERID = #{userid}
+  	</select>
+  </mapper>

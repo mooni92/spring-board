@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" id="BCryptPasswordEncoder" />
+	  <security:http pattern="/ckupload/**" security="none" /> 
+	<security:http>
+		<!-- <security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccessHandler"/> -->
+		<security:form-login login-page="/customLogin" />
+		<security:intercept-url pattern="/sample3/all" access="permitAll"/>
+		<security:intercept-url pattern="/sample3/member" access="hasRole('ROLE_MEMBER')"/>
+		<security:intercept-url pattern="/sample3/admin" access="hasRole('ROLE_ADMIN')"/>
+		<security:logout delete-cookies="remember-me" logout-success-url="/"/>
+		<security:remember-me data-source-ref="dataSource" token-validity-seconds="604800"/>
+		
+		<!--  <security:csrf disabled="true" />  -->
+		<!--  <security:intercept-url pattern="/board/*" access="permitAll"/> -->
+	</security:http>
+	
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="customUserDetailsService">
+			<!-- <security:user-service>
+				<security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
+				<security:user name="admin" password="{noop}admin" authorities="ROLE_ADMIN, ROLE_MEMBER"/>
+			</security:user-service> -->
+			
+		<!-- 	<security:jdbc-user-service data-source-ref="dataSource" 
+			 	users-by-username-query="SELECT USERID USERNAME, USERPW PASSWORD, ENABLED FROM TBL_MEMBER WHERE USERID=?"
+			 	authorities-by-username-query="SELECT USERID USERNAME, AUTH AUTHORITY FROM TBL_AUTH WHERE USERID = ?"
+			/> -->
+			
+			<!-- <security:password-encoder ref="noop"/> -->
+			<security:password-encoder ref="BCryptPasswordEncoder" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+</beans>

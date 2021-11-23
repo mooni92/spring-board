@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="net.eunoiaym.mapper.SalesMapper">
+  	<select id="getSalesListBy" resultType="map">
+  	
+  		SELECT MONTH, NVL(SALES,0) SALES
+  			FROM
+  				(SELECT TO_NUMBER(TO_CHAR(BUYDATE, 'MM')) MONTH, SUM(COST) SALES
+  				FROM FITNESS_SALES
+  				WHERE TO_CHAR(BUYDATE, 'YYYY') = #{year}
+  				GROUP BY TO_NUMBER(TO_CHAR(BUYDATE, 'MM'))) A
+  			RIGHT JOIN
+  				(SELECT ROWNUM MONTH
+  				FROM DICT
+  				WHERE ROWNUM &lt;= 12) B
+  				USING(MONTH)
+  				ORDER BY 1
+  	</select>
+  </mapper>
